@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// 定義節點結構
-// 1. data int
-// 2. 指向下一個節點的指針
+/**
+ * 节点结构定义
+ * @param data 存储的整数数据
+ * @param next 指向下一个节点的指针
+ */
 typedef struct Node
 {
     int data;
@@ -11,20 +13,60 @@ typedef struct Node
     struct Node *next;
 } Node;
 
+/**
+ * 创建新节点
+ * @param data 节点存储的数据
+ * @return 成功返回新节点指针, 失败返回NULL
+ */
 Node *create_node(int data);
 
+/**
+ * 在链表尾部追加节点
+ * @param head_ref 指向头指针的指针 (用于修改头节点)
+ * @param data 要添加的数据
+ */
 void list_append(Node **head_ref, int data);
 
+/**
+ * 在链表头部插入节点
+ * @param head_ref 指向头结点的指针
+ * @param data 要添加的数据
+ */
 void prepend_node(Node **head_ref, int data);
 
+/**
+ * 打印链表所有数据
+ * @param head 链表头节点
+ */
 void print_list(Node *head);
 
+/**
+ * 查找指定数据的节点
+ * @param head 链表头节点
+ * @param data 要查找的数据
+ * @return 找到返回节点指针, 否则返回NULL
+ */
 Node *find_node(Node *head, int data);
 
+/**
+ * 更新指定数据的节点
+ * @param head 链表头结点
+ * @param old_data 旧数据 (待更新)
+ * @param new_data
+ */
 void update_node(Node *head, int old_data, int new_data);
 
+/**
+ * 刪除指定數據的節點
+ * @param head_ref 指向頭指針的指針
+ * @param data 要刪除的數據
+ */
 void delete_node(Node **head_ref, int data);
 
+/**
+ * 釋放鏈表所有節點內存
+ * @param head_ref 指向頭指針的指針 (釋放後置爲NULL)
+ */
 void list_free(Node **head_ref);
 
 int main(void)
@@ -33,25 +75,75 @@ int main(void)
 
     Node *head = NULL;
 
+    // 測試1: 尾部追加節點
+    puts("\n\t[測試1: 尾部追加節點]");
     list_append(&head, 10);
     list_append(&head, 20);
     list_append(&head, 30);
+    print_list(head); // 預期: 10 -> 20 -> 30 -> NULL
 
-    print_list(head);
-
+    // 測試2: 繼續追加節點
+    puts("\n\t[測試2: 繼續追加節點]");
     list_append(&head, 40);
+    print_list(head); // 預期: 10 -> 20 -> 30 -> 40 -> NULL
 
-    print_list(head);
-
+    // 測試3: 頭部插入節點
+    puts("\n\t[測試3: 頭部插入節點]");
     prepend_node(&head, 5);
+    print_list(head); // 預期: 5 -> 10 -> 20 -> 30 -> 40 -> NULL
 
-    print_list(head);
+    // 測試4: 查找節點
+    puts("\n\t[測試4: 查找節點]");
+    Node *found = find_node(head, 20);
+    if (found != NULL)
+    {
+        printf("找到節點: %d\n", found->data); // 預期: 找到節點 20
+    }
+    else
+    {
+        printf("未找到節點\n");
+    }
 
+    found = find_node(head, 100);
+    if (found != NULL)
+    {
+        printf("找到節點: %d\n", found->data);
+    }
+    else
+    {
+        printf("未找到節點\n"); // 預期: 找到節點
+    }
+
+    // 測試5: 更新節點
+    puts("\n\t[測試5: 更新節點]");
+    update_node(head, 30, 300); // 存在的節點
+    update_node(head, 99, 999); // 不存在的節點
+    print_list(head);           // 預期: 5 -> 10 -> 20 -> 300 -> 40 -> NULL
+
+    // 測試6: 刪除節點(中間節點)
+    puts("\n\t[測試6: 刪除中間節點]");
+    delete_node(&head, 20);
+    print_list(head); // 預期: 5 -> 10 -> 300 -> 40 -> NULL
+
+    // 測試7: 刪除頭結點
+    puts("\n\t[測試7: 刪除頭節點]");
+    delete_node(&head, 5);
+    print_list(head); // 預期: 10 -> 300 -> 40 -> NULL
+
+    // 測試8: 刪除尾節點
+    puts("\n\t[測試8: 刪除尾節點]");
+    delete_node(&head, 40);
+    print_list(head); // 預期: 10 -> 300 -> NULL
+
+    // 測試9: 刪除不存在的節點
+    puts("\n\t[測試9: 刪除不存在的節點]");
+    delete_node(&head, 999);
+    print_list(head); // 預期: 10 -> 300 -> NULL
+
+    // 測試10: 釋放鏈表
+    puts("\n\t[測試10: 釋放鏈表]");
     list_free(&head);
-
-    head = NULL;
-
-    print_list(head);
+    print_list(head); // 預期: 當前鏈表: NULL
 
     return EXIT_SUCCESS;
 }
@@ -121,6 +213,7 @@ void print_list(Node *head)
 Node *find_node(Node *head, int data)
 {
     Node *current = head;
+    // 遍歷查找數據
     while (current != NULL)
     {
         if (current->data == data)
