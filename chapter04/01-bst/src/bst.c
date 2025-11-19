@@ -76,7 +76,6 @@ static void _destroy_subtree(Node *node)
 {
     if (!node)
     {
-        fprintf(stderr, "[error: _destroy_subtree] invalid arguments\n");
         return;
     }
     _destroy_subtree(node->left);  // 先销毁左子树
@@ -217,7 +216,6 @@ static void _traverse_recursive(const Node *node, VisitFunc visit,
 {
     if (!node || !visit)
     {
-        fprintf(stderr, "[error: _traverse_recursive] invalid arguments\n");
         return;
     }
 
